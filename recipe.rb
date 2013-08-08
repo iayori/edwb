@@ -34,6 +34,9 @@ when 'debian'
     libwxgtk2.8-0
   }
   erlpkg = 'package_R16B01_raring64_1371559180/esl-erlang_16.b.1-1~ubuntu~raring_amd64.deb'
+else
+  $stderr.puts "Unknown platform #{node['platform_family']}"
+  exit 1
 end
 
 erlpkg_file = '/tmp/esl-erlang.pkgtype'

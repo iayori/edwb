@@ -53,14 +53,13 @@ which configures the VM and runs the Elixir+Dynamo installer (above) on the VM.
 Author
 ------
 
-Current team:
+Current Authors:
  * [Clutch Analytics](https://github.com/clutchanalytics/)
    - [Taylor Carpenter](https://github.com/taylor)
    - [Jim Freeze](https://github.com/jfreeze/)
 
-Original authors:
-
- * [Chris McClimans](https://github.com/hh)
+Originally based on work from
+ * [Chris McClimans](https://github.com/hh) -- [Elixir-coolaid](https://github.com/codcafe/elixir-coolaid)
  * [Taylor Carpenter](https://github.com/taylor)
 
 Contributions

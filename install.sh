@@ -33,4 +33,5 @@ fi
 
 chef_apply=`which chef-apply 2> /dev/null || echo /opt/chef/bin/chef-apply`
 
+echo "Starting the install of all other components including Elixir and Dynamo!"
 sudo $chef_apply $myrecipe

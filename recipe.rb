@@ -44,10 +44,10 @@ when 'mac_os_x'
 when 'arch'
   pkg_prov = Chef::Provider::Package::Pacman
   $stderr.puts "#{node['platform_family'].capitalize} #{node['os'].capitalize} support coming soon :)"
-  exit 1
+  return
 else
   $stderr.puts "Unsupported platform: #{node['platform_family'].capitalize} #{node['os'].capitalize}"
-  exit 1
+  return
 end
 
 erlpkg_file = '/tmp/esl-erlang.pkgtype'
@@ -60,7 +60,7 @@ end
 
 # From https://www.erlang-solutions.com/downloads/download-erlang-otp
 remote_file erlpkg_file do
-  source 'https://elearning.erlang-solutions.com/couchdb//rbingen_adapter//' + erlpkg
+  source 'https://elearning.erlang-solutions.com/couchdb/rbingen_adapter/' + erlpkg
 end
 
 package 'esl-erlang' do

@@ -22,6 +22,7 @@ have_chef
 if [ $? = 0 ] ; then
   echo -n "Press ENTER to download and install Chef or CTRL-C to exit"
   read resp
+  sudo true
   curl -L https://www.opscode.com/chef/install.sh | sudo bash
 
   have_chef

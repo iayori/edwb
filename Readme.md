@@ -1,6 +1,6 @@
 # Elixir + Dynamo Working Build Setup
 
-This project helps you to get up and running quickly with Erlang, Elixir, and Dynamo.
+This gets a working STABLE Elixir + Dynamo build with all dependencies.
 
 The setup uses Chef to manage the installs.
 
@@ -47,10 +47,15 @@ vagrant up
 Author
 ------
 
+Current team:
+ * [Clutch Analytics](https://github.com/clutchanalytics/)
+   - [Jim Freeze](https://github.com/jfreeze/)
+   - [Taylor Carpenter](https://github.com/taylor)
+
 Original authors:
 
-* [Chris McClimans](https://github.com/hh)
-* [Taylor Carpenter](https://github.com/taylor)
+ * [Chris McClimans](https://github.com/hh)
+ * [Taylor Carpenter](https://github.com/taylor)
 
 Contributions
 -------------
@@ -60,4 +65,4 @@ Submit a pull request
 Copyright
 ---------
 
-Copyright (c) 2013 CodeCafe MIT LICENSE (see LICENSE for details)
+Copyright (c) 2013 Clutch Analytics, CodeCafe [MIT LICENSE](https://github.com/clutchanalytics/elixir-dynamo-working-builds/LICENSE) (see [LICENSE] for details)

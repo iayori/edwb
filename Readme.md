@@ -1,20 +1,18 @@
-Elixir + Dynamo Quick Setup
-===========================
+# Elixir + Dynamo Working Build Setup
 
 This project helps you to get up and running quickly with Erlang, Elixir, and Dynamo.
 
-It currently uses Chef to set everything up.
+The setup uses Chef to manage the installs.
 
 Summary of steps:
- 1. Install pre-reqs
- 2. Clone repo
- 3. Start build
-
-Enjoy Elixr + Dynamo!
+ 1. Clone repo
+ 2. Start install
+ 3. Enjoy Elixr + Dynamo!
 
 Usage
 -----
 
+```git clone
 To use install http://www.opscode.com/chef/install/ on centos 6 or ubuntu 13.04 
 
 Usually that simply means:

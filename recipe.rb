@@ -5,13 +5,16 @@
 
 ##### attributes / variables
 
+edwb_release   = "1"
 elixir_release = 'bb4874' # or 'v0.10.2-dev'
 rebar_release  = '2.0.0'
 dynamo_release = '82aa4c' # or 'elixir-0.10.0'
-elixir_dir     = '/opt/depot/elixir'
-dynamo_dir     = '/opt/depot/dynamo'
+elixir_dir     = "/opt/depot/edwb-#{edwb_release}/elixir"
+dynamo_dir     = "/opt/depot/edwb-#{edwb_release}/dynamo"
 
+iex_ver        = '0.10.2-dev'
 erl_ver        = '5.10.2' # BEAM version (just for verification purposes)
+#erl_ver        = "16B*" # 16B*
 # Would be nice if I could just look for 16B etc
 # How about  ERL_CRASH_DUMP_SECONDS=0 erl -shutdown_time 1 -run 'exit(because)'
 # Also could use iex --version which gives both
@@ -34,8 +37,16 @@ when 'debian'
     libwxgtk2.8-0
   }
   erlpkg = 'package_R16B01_raring64_1371559180/esl-erlang_16.b.1-1~ubuntu~raring_amd64.deb'
+when 'mac_os_x'
+  pkg_prov = nil
+  erlpkg = 'package_erlang_R16B01-1_kgadek_2013.06.18_15:23:36/Erlang_R16B01_x86.dmg'
+  $stderr.puts "#{node['platform_family'].capitalize} #{node['os'].capitalize} support coming soon :)"
+when 'arch'
+  pkg_prov = Chef::Provider::Package::Pacman
+  $stderr.puts "#{node['platform_family'].capitalize} #{node['os'].capitalize} support coming soon :)"
+  exit 1
 else
-  $stderr.puts "Unknown platform #{node['platform_family']}"
+  $stderr.puts "Unsupported platform: #{node['platform_family'].capitalize} #{node['os'].capitalize}"
   exit 1
 end
 

@@ -11,11 +11,12 @@ The setup currently uses Chef to manage the installs.
 Installation to Your Local System
 -----
 
-Get the repository:
+### Get the repository:
 ```
 git clone https://github.com/clutchanalytics/elixir-dynamo-working-builds.git
 ```
 
+### Install
 ```
   cd elixir-dynamo-working-builds
   # Edit recipe.rb to customize the build
@@ -25,7 +26,7 @@ git clone https://github.com/clutchanalytics/elixir-dynamo-working-builds.git
 Installing on a VM via Vagrant
 -----
 
-## Install the following if needed:
+### Install the following if needed:
 
  * Install VirtualBox
    - https://www.virtualbox.org/wiki/Downloads
@@ -34,11 +35,19 @@ Installing on a VM via Vagrant
  * Install Vagrant Omnibus
    - run ```vagrant plugin install vagrant-omnibus```
 
+
+### Get the repository:
 ```
+git clone https://github.com/clutchanalytics/elixir-dynamo-working-builds.git
+```
+
+### Install
+```
+  cd elixir-dynamo-working-builds
   ./install.sh -vm
 ```
 
-which configures the VM and runs the Elixir+Dynamo installer (above) on the VM.
+This builds the VM, installs and runs Elixir + Dynamo (above) on the VM.
 
 Author
 ------

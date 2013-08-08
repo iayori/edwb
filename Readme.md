@@ -70,5 +70,5 @@ Submit a pull request
 Copyright
 ---------
 
-Copyright (c) 2013 Clutch Analytics, [MIT LICENSE](https://github.com/clutchanalytics/elixir-dynamo-working-builds/LICENSE) (see [LICENSE] for details)
+Copyright (c) 2013 Clutch Analytics, [MIT LICENSE](https://raw.github.com/clutchanalytics/elixir-dynamo-working-builds/master/LICENSE)
 

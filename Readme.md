@@ -1,13 +1,17 @@
 # Elixir + Dynamo Working Build Setup
 
-This gets a working STABLE Elixir + Dynamo build with all dependencies.
+This gets the most current and *stable* Elixir + Dynamo build with all dependencies.
 
-The setup uses Chef to manage the installs.
+By stable we mean a stable working pair with all dependencies.  It may not be
+what is labeled stable from those projects, but instead will be as current as
+possible though it will unlikely be HEAD.
 
 Summary of steps:
  1. Clone repo
- 2. Start install
- 3. Enjoy Elixr + Dynamo!
+ 2. Run installer
+ 3. Enjoy a stable Elixr + Dynamo setup!
+
+The setup currently uses Chef to manage the installs.
 
 Installation
 -----
@@ -24,19 +28,27 @@ git clone https://github.com/clutchanalytics/elixir-dynamo-working-builds.git
 
 Edit the recipe.rb to specify the versions, branches, tags for the software.
 
-Testing with Vagrant
---------------------
+Installing on VM via Vagrant
+----------------------------
 
  * Install VirtualBox
- * Install Vagrant -- http://downloads.vagrantup.com/tags/v1.2.7
- * Download http://dlc.sun.com.edgesuite.net/virtualbox/4.2.16/SHA256SUMS
+   - https://www.virtualbox.org/wiki/Downloads
+ * Install Vagrant 
+   - http://downloads.vagrantup.com/tags/v1.2.7
+ * Download Image List
+   - http://dlc.sun.com.edgesuite.net/virtualbox/4.2.16/SHA256SUMS
+ * Install Vagrant Omnibus
+   - run ```vagrant plugin install vagrant-omnibus```
+
+TODO: Create vm-setup.sh which does above
 
 Then run
 
 ```
-vagrant plugin install vagrant-omnibus
 vagrant up
 ```
+
+which configures the VM and runs the Elixir+Dynamo installer (above) on the VM.
 
 Author
 ------

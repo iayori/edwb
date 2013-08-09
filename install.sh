@@ -11,22 +11,25 @@ eecho() {
   echo $@ 1>&2
 }
 
-have_chef() {
-  chef_bin="chef-apply"
-  [[ -n "`which "$chef_bin" 2> /dev/null`" ]] ||
-    [[ ! -x /opt/chef/bin/$chef_bin ]]
+have_bin() {
+  binname="$1"
+  altpath="$2"
+  eecho "looking for $binname"
+  found="$(which "$binname" 2> /dev/null)"
+  ([[ -n "$found" ]] ||
+    ([[ -n "$altpath" ]] && [[ -x "$altpath/$binname" ]]))
 }
 
 ## Install Chef
-have_chef
-if [ $? = 0 ] ; then
+have_bin chef-apply /opt/chef/bin
+if [ $? = 1 ] ; then
   echo -n "Press ENTER to download and install Chef or CTRL-C to exit"
   read resp
   sudo true
-  curl -L https://www.opscode.com/chef/install.sh | sudo bash
+  #curl -L https://www.opscode.com/chef/install.sh | sudo bash
 
-  have_chef
-  if [ $? = 0 ] ; then
+  have_bin chef-apply /opt/chef/bin
+  if [ $? = 1 ] ; then
     eecho "Failed to find or install Chef!"
     exit 1
   fi

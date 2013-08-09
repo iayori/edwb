@@ -41,6 +41,7 @@ when 'mac_os_x'
   pkg_prov = nil
   erlpkg = 'package_erlang_R16B01-1_kgadek_2013.06.18_15:23:36/Erlang_R16B01_x86.dmg'
   $stderr.puts "#{node['platform_family'].capitalize} #{node['os'].capitalize} support coming soon :)"
+  return
 when 'arch'
   pkg_prov = Chef::Provider::Package::Pacman
   $stderr.puts "#{node['platform_family'].capitalize} #{node['os'].capitalize} support coming soon :)"

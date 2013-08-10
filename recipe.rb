@@ -17,7 +17,7 @@ erl_ver        = '5.10.2' # BEAM version (just for verification purposes)
 #erl_ver        = "16B*" # 16B*
 # Would be nice if I could just look for 16B etc
 # How about  ERL_CRASH_DUMP_SECONDS=0 erl -shutdown_time 1 -run 'exit(because)'
-# Also could use iex --version which gives both
+# Also could use iex --version (or -v) which gives both but piping causes erlang to not print
 
 case node['platform_family']
 when 'rhel'

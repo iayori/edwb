@@ -5,6 +5,7 @@
 ##### attributes / variables
 myrecipe="recipe.rb"
 
+kernel_name=$(uname -s)
 ## FUNCTIONS
 
 eecho() {
@@ -19,6 +20,36 @@ have_bin() {
   ([[ -n "$found" ]] ||
     ([[ -n "$altpath" ]] && [[ -x "$altpath/$binname" ]]))
 }
+
+install_homebrew() {
+  ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+}
+
+case $kernel_name in
+  Darwin)
+    # TODO: check for gcc
+    # see the command line installer gcc stuff
+    if [ ! -d /usr/local/Cellar ] ; then
+      install_homebrew
+    fi
+    ;;
+esac
+
+
+have_bin git
+if [ "$1" = 1 ] ; then
+  case $kernel_name in
+    Darwin)
+      echo "Installing git"
+      ;;
+    Linux)
+      echo "Install GIT and try again"
+      ;;
+    *)
+      echo "Install GIT and try again"
+      ;;
+  esac
+fi
 
 ## Install Chef
 have_bin chef-apply /opt/chef/bin

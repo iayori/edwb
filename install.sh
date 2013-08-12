@@ -22,6 +22,9 @@ have_bin() {
 }
 
 install_homebrew() {
+  echo "Installing homebrew via https://raw.github.com/mxcl/homebrew/go"
+  [ -n "$DRYRUN" ] &&
+    return
   ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
 }
 
@@ -51,22 +54,31 @@ if [ "$1" = 1 ] ; then
   esac
 fi
 
-## Install Chef
-have_bin chef-apply /opt/chef/bin
-if [ $? = 1 ] ; then
-  echo -n "Press ENTER to download and install Chef or CTRL-C to exit"
-  read resp
-  sudo true
-  #curl -L https://www.opscode.com/chef/install.sh | sudo bash
-
+install_chef() {
+  ## Install Chef
   have_bin chef-apply /opt/chef/bin
   if [ $? = 1 ] ; then
-    eecho "Failed to find or install Chef!"
-    exit 1
+    echo "Installing Chef..."
+    #echo -n "Press ENTER to download and install Chef or CTRL-C to exit"
+    #read resp
+    [ -z "$DRYRUN" ] &&
+      return
+
+    sudo true &&
+      curl -L https://www.opscode.com/chef/install.sh | sudo bash
+
+    have_bin chef-apply /opt/chef/bin
+    if [ $? = 1 -a -z "$DRYRUN" ] ; then
+      eecho "Failed to find or install Chef!"
+      exit 1
+    fi
   fi
-fi
+}
+
+install_chef
 
 chef_apply=`which chef-apply 2> /dev/null || echo /opt/chef/bin/chef-apply`
 
 echo "Starting the install of all other components including Elixir and Dynamo!"
-sudo $chef_apply $myrecipe
+[ -z "$DRYRUN" ] &&
+  sudo $chef_apply $myrecipe

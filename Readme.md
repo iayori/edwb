@@ -60,7 +60,7 @@ Current Authors:
 Originally based on work from
  * [Chris McClimans](https://github.com/hh) -- [Elixir-coolaid](https://github.com/codcafe/elixir-coolaid)
  * [Taylor Carpenter](https://github.com/taylor)
- * [Watson](https://github.com/wavell) and [Ayori](https://github.com/    iayori) (walk-thru documentaion created at LSRC 2013)
+ * [Watson](https://github.com/wavell) and [Ayori](https://github.com/iayori) (walk-thru documentaion created at LSRC 2013)
 
 Contributions
 -------------

@@ -62,11 +62,12 @@ packages.each do |pkg|
 end
 
 if node["platform"] == "mac_os_x"
-  execute 'Install erlang with Homebrew' do
-    command 'brew install erlang || true'
-    not_if { ::File.exists?("/usr/local/Cellar/erlang")}
-    #action :nothing
-  end
+  puts "hello mac"
+#  execute 'Install erlang with Homebrew' do
+#    command 'brew install erlang || true'
+#    not_if { ::File.exists?("/usr/local/Cellar/erlang")}
+#    #action :nothing
+#  end
 elsif node["platform_family"] == "arch"
   package erlpkg do
     provider pkg_prov

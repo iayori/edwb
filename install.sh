@@ -6,6 +6,8 @@
 myrecipe="recipe.rb"
 repourl="https://github.com/clutchanalytics/edwb.git"
 
+VERBOSE=0
+
 kernel_name=$(uname -s)
 
 ########################################################################
@@ -18,7 +20,7 @@ eecho() {
 have_bin() {
   binname="$1"
   altpath="$2"
-  eecho "looking for $binname"
+  [[ $VERBOSE = 1 ]] && eecho "looking for $binname"
   found="$(which "$binname" 2> /dev/null)"
   ([[ -n "$found" ]] ||
     ([[ -n "$altpath" ]] && [[ -x "$altpath/$binname" ]]))
@@ -61,8 +63,8 @@ esac
 
 # TODO: maybe use chef recipe
 install_homebrew() {
-  [[ -n "$DRYRUN" ]] && return
   [[ -x /usr/local/bin/brew ]] && return
+  [[ -n "$DRYRUN" ]] && return
   echo "Installing homebrew via https://raw.github.com/mxcl/homebrew/go"
 
   ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)" &&
@@ -78,10 +80,9 @@ install_chef() {
   have_bin chef-apply /opt/chef/bin
   if [ $? = 1 ] ; then
     echo "Installing Chef..."
-    #echo -n "Press ENTER to download and install Chef or CTRL-C to exit"
-    #read resp
-    [ -z "$DRYRUN" ] &&
-      return
+    [ -n "$DRYRUN" ] && return
+
+    echo "getting the chef"
 
     sudo true &&
       curl -L https://www.opscode.com/chef/install.sh | sudo bash
@@ -91,6 +92,13 @@ install_chef() {
       eecho "ERROR: Problem finding/installing Chef!"
       exit 1
     fi
+  fi
+}
+
+install_osx_java() {
+  if [ ! -f /System/Library/Frameworks/JavaVM.framework/JavaVM ] ; then
+    # For Lion simply run java to have a pop-up happen for install
+    java -version
   fi
 }
 
@@ -111,6 +119,7 @@ while [ true ] ; do
   [[ -z "$1" ]] && break
 done
 
+
 ########################################################################
 ## Setup the basics
 
@@ -121,6 +130,7 @@ case $kernel_name in
       exit 1
     fi
 
+    install_osx_java
     install_homebrew
     ;;
 esac
@@ -142,18 +152,23 @@ if [ "$1" = 1 ] ; then
   esac
 fi
 
-### now clone our url
-
-tempdir="$(mktemp -d -t edwb.XXXXXXXXXX)"
-repodir="$tempdir/edwb"
-
-
-git clone "$repourl" "$repodir"
-
 install_chef
+
+### Clone our repo, setup chef, and run it
+
+repodir="$HOME/edwb-install"
+
+if [ -d "$repodir" ] ; then
+  echo "Using existing installer checkout"
+  cd "$repodir" && git pull
+else
+  git clone "$repourl" "$repodir"
+fi
+
+cd $repodir
 
 chef_apply=`which chef-apply 2> /dev/null || echo /opt/chef/bin/chef-apply`
 
-echo "Starting the install of all other components including Elixir and Dynamo!"
+echo "Running chef-apply"
 [ -z "$DRYRUN" ] &&
   sudo $chef_apply $myrecipe

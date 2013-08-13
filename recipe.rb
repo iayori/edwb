@@ -6,9 +6,11 @@
 ##### attributes / variables
 
 edwb_release   = "1"
-elixir_release = 'bb4874' # or 'v0.10.2-dev'
+#elixir_release = 'bb4874' # or 'v0.10.2-dev'
+elixir_release = 'edwb-1' # or 'v0.10.2-dev'
 rebar_release  = '2.0.0'
-dynamo_release = '82aa4c' # or 'elixir-0.10.0'
+dynamo_release = 'edwb-1' # or 'elixir-0.10.0'
+#dynamo_release = '82aa4c' # or 'elixir-0.10.0'
 elixir_dir     = "/opt/depot/edwb-#{edwb_release}/elixir"
 dynamo_dir     = "/opt/depot/edwb-#{edwb_release}/dynamo"
 
@@ -92,7 +94,8 @@ else
 end
 
 git elixir_dir do
-  repository 'https://github.com/elixir-lang/elixir.git'
+  #repository 'https://github.com/elixir-lang/elixir.git'
+  repository 'https://github.com/clutchanalytics/elixir.git'
   reference elixir_release
 end
 
@@ -137,7 +140,8 @@ file '/etc/profile.d/elixier.sh' do
 end
 
 git dynamo_dir do
-  repository 'https://github.com/elixir-lang/dynamo.git'
+  #repository 'https://github.com/elixir-lang/dynamo.git'
+  repository 'https://github.com/clutchanalytics/dynamo.git'
   reference dynamo_release
   notifies :run, 'execute[make dynamo]'
 end

@@ -72,9 +72,14 @@ packages.each do |pkg|
   package pkg
 end
 
+# TODO: Maybe switch to using Kerl for erlang installs
+#       https://github.com/spawngrid/kerl
+#       http://docs.basho.com/riak/1.2.1/tutorials/installation/Installing-Erlang/
+
 if node["platform"] == "mac_os_x"
   execute 'Install erlang with Homebrew' do
     # check for running as root
+    command "sudo -u #{ENV['SUDO_USER']} brew tap versions"
     command "sudo -u #{ENV['SUDO_USER']} brew install erlang-r16"
     #command 'brew install erlang || true'
    # not_if { ::File.exists?("/usr/local/bin/erl")}

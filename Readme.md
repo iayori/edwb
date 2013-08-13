@@ -11,19 +11,30 @@ The setup currently uses Chef to manage the installs.
 Installation to Your Local System
 ---------------------------------
 
+## Install the pre-requisites
+
+OS X:
+ 1. Install Build tools
+   - [XCode](https://itunes.apple.com/us/app/xcode/id497799835)
+   - [Command Line Tools](https://developer.apple.com/downloads)
+   - https://github.com/kennethreitz/osx-gcc-installer
+
+## Quick Install
+
+```bash <(curl -fsSL https://raw.github.com/clutchanalytics/edwb/master/install.sh)``` 
+
+## Slightly Longer Install
+
 ### Get the repository:
+
 ```
 git clone https://github.com/clutchanalytics/edwb.git
 ```
 
-### Pre-requisites
-
-OS X:
- 1. Install [XCode](https://itunes.apple.com/us/app/xcode/id497799835) or [Command Line Tools](https://developer.apple.com/downloads)
-
 ### Install
+
 ```
-  cd elixir-dynamo-working-builds
+  cd edwb
   # Edit recipe.rb to customize the build
   ./install.sh
 ```
@@ -48,7 +59,7 @@ git clone https://github.com/clutchanalytics/edwb.git
 
 ### Install
 ```
-  cd elixir-dynamo-working-builds
+  cd edwb
   ./install.sh -vm
 ```
 

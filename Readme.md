@@ -9,12 +9,17 @@ possible though it will unlikely be HEAD.
 The setup currently uses Chef to manage the installs.
 
 Installation to Your Local System
------
+---------------------------------
 
 ### Get the repository:
 ```
-git clone https://github.com/clutchanalytics/elixir-dynamo-working-builds.git
+git clone https://github.com/clutchanalytics/edwb.git
 ```
+
+### Pre-requisites
+
+OS X:
+ 1. Install [XCode](https://itunes.apple.com/us/app/xcode/id497799835) or [Command Line Tools](https://developer.apple.com/downloads)
 
 ### Install
 ```
@@ -24,7 +29,7 @@ git clone https://github.com/clutchanalytics/elixir-dynamo-working-builds.git
 ```
 
 Installing on a VM via Vagrant
------
+------------------------------
 
 ### Install the following if needed:
 
@@ -38,7 +43,7 @@ Installing on a VM via Vagrant
 
 ### Get the repository:
 ```
-git clone https://github.com/clutchanalytics/elixir-dynamo-working-builds.git
+git clone https://github.com/clutchanalytics/edwb.git
 ```
 
 ### Install

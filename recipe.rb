@@ -42,10 +42,12 @@ when 'mac_os_x'
   pkg_prov = nil
   #erlpkg = 'package_erlang_R16B01-1_kgadek_2013.06.18_15:23:36/Erlang_R16B01_x86.dmg'
   erlpkg = 'erlang' # homebrew
+  packages = []
   #$stderr.puts "#{node['platform_family'].capitalize} #{node['os'].capitalize} support coming soon :)"
 when 'arch'
   pkg_prov = Chef::Provider::Package::Pacman
   erlpkg = 'erlang'
+  packages = []
   #$stderr.puts "#{node['platform_family'].capitalize} #{node['os'].capitalize} support coming soon :)"
   #return
 else
@@ -62,12 +64,11 @@ packages.each do |pkg|
 end
 
 if node["platform"] == "mac_os_x"
-  puts "hello mac"
-#  execute 'Install erlang with Homebrew' do
-#    command 'brew install erlang || true'
-#    not_if { ::File.exists?("/usr/local/Cellar/erlang")}
-#    #action :nothing
-#  end
+  execute 'Install erlang with Homebrew' do
+    command 'brew install erlang || true'
+    not_if { ::File.exists?("/usr/local/Cellar/erlang")}
+    #action :nothing
+  end
 elsif node["platform_family"] == "arch"
   package erlpkg do
     provider pkg_prov

@@ -160,8 +160,21 @@ end
 
 file '/etc/profile.d/elixier.sh' do
   content <<-EOE
-  PATH="$PATH::#{elixir_dir}/bin"
-  EOE
+PATH="$PATH::#{elixir_dir}/bin"
+MIX_PATH="$MIX_PATH:#{dynamo_dir}/ebin"
+EOE
+  action :create
+  notifies :run, 'bash[Add elixir.sh to .bash_profile]'
+end
+
+bash "Add elixir.sh to .bash_profile" do
+  code <<-EOC
+  grep -qs /etc/profile.d/elixier.sh $HOME/.bash_profile
+  if [ "$?" = 1 ] ; then
+    echo ". /etc/profile.d/elixier.sh" | tee -a $HOME/.bash_profile
+  fi
+EOC
+  action :nothing
 end
 
 git dynamo_dir do
@@ -174,10 +187,21 @@ end
 execute 'make dynamo' do
   # warning... this uses git:// remotes http_proxies won't work
   # || true because many tests fail.. make make w/o tests?
-  command 'mix do deps.get, test || true'
+  #command 'mix do deps.get, test || true'
+  command 'mix do deps.get, test'
   environment ({
     'MIX_ENV' => 'test'
   })
   action :nothing
   cwd dynamo_dir
+  returns [0,1] # https test errors in dynamo
 end
+
+#execute 'make dynamo archive and local install' do
+#  command 'mix do archive, local.install'
+#  environment ({
+#    'MIX_ENV' => 'test'
+#  })
+#  #action :nothing
+#  cwd dynamo_dir
+#end

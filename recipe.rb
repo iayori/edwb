@@ -11,8 +11,9 @@ elixir_release = 'edwb-1' # or 'v0.10.2-dev'
 rebar_release  = '2.0.0'
 dynamo_release = 'edwb-1' # or 'elixir-0.10.0'
 #dynamo_release = '82aa4c' # or 'elixir-0.10.0'
-elixir_dir     = "/opt/depot/edwb-#{edwb_release}/elixir"
-dynamo_dir     = "/opt/depot/edwb-#{edwb_release}/dynamo"
+edwb_dir     = "/opt/depot/edwb-#{edwb_release}"
+elixir_dir     = File.join(edwb_dir,"elixir")
+dynamo_dir     = File.join(edwb_dir,"dynamo")
 
 iex_ver        = '0.10.2-dev'
 erl_ver        = '5.10.2' # BEAM version (just for verification purposes)
@@ -59,6 +60,12 @@ end
 
 erlpkg_file = '/tmp/esl-erlang.pkgtype'
 
+
+directory edwb_dir do
+  action :create
+  recursive true
+end
+
 ##### chef resources
 
 packages.each do |pkg|
@@ -67,8 +74,12 @@ end
 
 if node["platform"] == "mac_os_x"
   execute 'Install erlang with Homebrew' do
-    command 'brew install erlang || true'
-    not_if { ::File.exists?("/usr/local/Cellar/erlang")}
+    # check for running as root
+    command "sudo -u #{ENV['SUDO_USER']} brew install erlang-r16"
+    #command 'brew install erlang || true'
+   # not_if { ::File.exists?("/usr/local/bin/erl")}
+    not_if "erl -version 2>&1| grep #{erl_ver}"
+    #not_if { ::File.exists?("/usr/local/Cellar/erlang")}
     #action :nothing
   end
 elsif node["platform_family"] == "arch"
@@ -131,6 +142,11 @@ end
 
 link "#{elixir_dir}/bin/rebar" do
   to "#{Chef::Config[:file_cache_path]}/rebar/rebar"
+end
+
+directory '/etc/profile.d' do
+  action :create
+  recursive true
 end
 
 file '/etc/profile.d/elixier.sh' do

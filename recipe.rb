@@ -76,10 +76,14 @@ end
 #       https://github.com/spawngrid/kerl
 #       http://docs.basho.com/riak/1.2.1/tutorials/installation/Installing-Erlang/
 
+execute "Install Homebrew versions" do 
+  command "sudo -u #{ENV['SUDO_USER']} brew tap homebrew/versions"
+  not_if { ::File.exists?("/usr/local/Library/Taps/homebrew-versions")}
+end
+
 if node["platform"] == "mac_os_x"
   execute 'Install erlang with Homebrew' do
     # check for running as root
-    command "sudo -u #{ENV['SUDO_USER']} brew tap versions"
     command "sudo -u #{ENV['SUDO_USER']} brew install erlang-r16"
     #command 'brew install erlang || true'
    # not_if { ::File.exists?("/usr/local/bin/erl")}

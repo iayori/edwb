@@ -38,14 +38,16 @@ when 'debian'
   }
   erlpkg = 'package_R16B01_raring64_1371559180/esl-erlang_16.b.1-1~ubuntu~raring_amd64.deb'
 when 'mac_os_x'
+  # TODO: Maybe use homebrew cookbook -- switch to chef-solo, solist, etc 
   pkg_prov = nil
-  erlpkg = 'package_erlang_R16B01-1_kgadek_2013.06.18_15:23:36/Erlang_R16B01_x86.dmg'
-  $stderr.puts "#{node['platform_family'].capitalize} #{node['os'].capitalize} support coming soon :)"
-  return
+  #erlpkg = 'package_erlang_R16B01-1_kgadek_2013.06.18_15:23:36/Erlang_R16B01_x86.dmg'
+  erlpkg = 'erlang' # homebrew
+  #$stderr.puts "#{node['platform_family'].capitalize} #{node['os'].capitalize} support coming soon :)"
 when 'arch'
   pkg_prov = Chef::Provider::Package::Pacman
-  $stderr.puts "#{node['platform_family'].capitalize} #{node['os'].capitalize} support coming soon :)"
-  return
+  erlpkg = 'erlang'
+  #$stderr.puts "#{node['platform_family'].capitalize} #{node['os'].capitalize} support coming soon :)"
+  #return
 else
   $stderr.puts "Unsupported platform: #{node['platform_family'].capitalize} #{node['os'].capitalize}"
   return
@@ -59,15 +61,32 @@ packages.each do |pkg|
   package pkg
 end
 
-# From https://www.erlang-solutions.com/downloads/download-erlang-otp
-remote_file erlpkg_file do
-  source 'https://elearning.erlang-solutions.com/couchdb/rbingen_adapter/' + erlpkg
-end
+if node["platform"] == "mac_os_x"
+  execute 'Install erlang with Homebrew' do
+    command 'brew install erlang || true'
+    not_if { ::File.exists?("/usr/local/Cellar/erlang")}
+    #action :nothing
+  end
+elsif node["platform_family"] == "arch"
+  package erlpkg do
+    provider pkg_prov
+    not_if "erl -version 2>&1| grep #{erl_ver}"
+  end
+elsif node["platform"] == "linux"
+  # From https://www.erlang-solutions.com/downloads/download-erlang-otp
+  remote_file erlpkg_file do
+    source 'https://elearning.erlang-solutions.com/couchdb/rbingen_adapter/' + erlpkg
+  end
 
-package 'esl-erlang' do
-  source erlpkg_file
-  provider pkg_prov
-  not_if "erl -version 2>&1| grep #{erl_ver}"
+  package 'esl-erlang' do
+    source erlpkg_file
+    provider pkg_prov
+    not_if "erl -version 2>&1| grep #{erl_ver}"
+  end
+else
+  # never should get here
+  $stderr.puts "Unsupported platform: #{node['platform_family'].capitalize} #{node['os'].capitalize}"
+  return
 end
 
 git elixir_dir do
@@ -91,6 +110,7 @@ bash 'Compile and Test Elixer' do
 # Ran "bash"  "/tmp/chef-script20130807-25188-15hc020" returned 2
   creates "#{elixir_dir}/lib/elixir/ebin/elixir.app"
 end
+
 
 git "#{Chef::Config[:file_cache_path]}/rebar" do
   repository 'https://github.com/rebar/rebar.git'

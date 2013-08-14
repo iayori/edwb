@@ -175,7 +175,7 @@ repodir="$HOME/edwb-install"
 
 if [ -d "$repodir" ] ; then
   echo "Using existing installer checkout"
-  cd "$repodir" && git pull
+  cd "$repodir" && git stash && git pull
 else
   git clone "$repourl" "$repodir"
 fi

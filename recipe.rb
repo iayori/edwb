@@ -146,6 +146,7 @@ bash 'Compile and Test Elixer' do
   creates "#{elixir_dir}/lib/elixir/ebin/elixir.app"
 end
 
+# TODO: see if pulling in rebar is needed as it is in the elixir repo now
 if node["platform"] == "mac_os_x"
   execute 'Install rebar with Homebrew' do
     command "sudo -u #{ENV['SUDO_USER']} brew install rebar"

@@ -5,20 +5,26 @@
 ##### attributes / variables
 myrecipe="recipe.rb"
 repourl="https://github.com/clutchanalytics/edwb.git"
-
 VERBOSE=0
-[[ "$1" = "-v" ]] &&
-  VERBOSE=1 && shift
 
+########################################################################
+### Utility settings
 kernel_name=$(uname -s)
-
+pkgmr=""
 chef_opts=""
+me=$(basename $0)
+mypath=$(dirname $0)
+mypath_real=$(dirname `readlink -n $0`)
 
 ########################################################################
 ## Utility FUNCTIONS
 
 eecho() {
   echo $@ 1>&2
+}
+
+usage() {
+  echo "$me [verbose] [-vm]"
 }
 
 have_bin() {
@@ -29,37 +35,6 @@ have_bin() {
   ([[ -n "$found" ]] ||
     ([[ -n "$altpath" ]] && [[ -x "$altpath/$binname" ]]))
 }
-
-########################################################################
-## System package manager
-
-pkgmr=""
-case $kernel_name in
-  Darwin)
-    pkgmgr="brew"
-    ;;
-  Linux)
-    have_bin pacman
-    if [ "$?" = "0" -a -z "$pkgmgr" ] ; then
-      pkgmgr="pacman"
-    else
-      have_bin apt-get
-    fi
-
-    if [ "$?" = "0" -a -z "$pkgmgr" ] ; then
-      pkgmgr="apt-get"
-    else
-      have_bin yum
-    fi
-    if [ "$?" = "0" -a -z "$pkgmgr" ] ; then
-      pkgmgr="yum"
-    fi
-    ;;
-  *)
-    eecho "Unsupported Platform: $kernel_name"
-    ;;
-esac
-
 
 ########################################################################
 ## Installer functions
@@ -106,12 +81,18 @@ install_osx_java() {
   fi
 }
 
-
 ########################################################################
 ## Parse args
 
 while [ true ] ; do
   case $1 in
+    -h|-help|--help|help)
+      usage
+      exit 0
+      ;;
+    -v|-verbose|verbose)
+      VERBOSE=1
+      shift
     -vm)
       echo "Coming soon"
       exit 0
@@ -125,7 +106,36 @@ done
 
 
 ########################################################################
-## Setup the basics
+## Choose system package manager
+
+case $kernel_name in
+  Darwin)
+    pkgmgr="brew"
+    ;;
+  Linux)
+    have_bin pacman
+    if [ "$?" = "0" -a -z "$pkgmgr" ] ; then
+      pkgmgr="pacman"
+    else
+      have_bin apt-get
+    fi
+
+    if [ "$?" = "0" -a -z "$pkgmgr" ] ; then
+      pkgmgr="apt-get"
+    else
+      have_bin yum
+    fi
+    if [ "$?" = "0" -a -z "$pkgmgr" ] ; then
+      pkgmgr="yum"
+    fi
+    ;;
+  *)
+    eecho "Unsupported Platform: $kernel_name"
+    ;;
+esac
+
+########################################################################
+## Install some prereqs and do general setup
 
 case $kernel_name in
   Darwin)

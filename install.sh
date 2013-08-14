@@ -13,8 +13,8 @@ kernel_name=$(uname -s)
 pkgmr=""
 chef_opts=""
 me=$(basename $0)
-mypath=$(dirname $0)
-mypath_real=$(dirname `readlink -n $0`)
+#mypath=$(dirname $0)
+#mypath_real=$(dirname `readlink -n $0`)
 
 ########################################################################
 ## Utility FUNCTIONS

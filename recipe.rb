@@ -5,22 +5,27 @@
 
 ##### attributes / variables
 
-edwb_release   = "1"
-#elixir_release = 'bb4874' # or 'v0.10.2-dev'
-elixir_release = 'edwb-1' # or 'v0.10.2-dev'
-rebar_release  = '2.0.0'
-dynamo_release = 'edwb-1' # or 'elixir-0.10.0'
-#dynamo_release = '82aa4c' # or 'elixir-0.10.0'
-edwb_dir     = "/opt/depot/edwb-#{edwb_release}"
-elixir_dir     = File.join(edwb_dir,"elixir")
-dynamo_dir     = File.join(edwb_dir,"dynamo")
+edwb_release   = "2"
 
+rebar_release  = '2.0.0'
 iex_ver        = '0.10.2-dev'
 erl_ver        = '5.10.2' # BEAM version (just for verification purposes)
 #erl_ver        = "16B*" # 16B*
-# Would be nice if I could just look for 16B etc
-# How about  ERL_CRASH_DUMP_SECONDS=0 erl -shutdown_time 1 -run 'exit(because)'
-# Also could use iex --version (or -v) which gives both but piping causes erlang to not print
+
+#elixir_release = 'bb4874' # or 'v0.10.2-dev'
+elixir_release = "edwb-#{edwb_release}" # or 'v0.10.2-dev'
+elixir_repo    = 'https://github.com/clutchanalytics/elixir'
+#elixir_repo    = 'https://github.com/elixir-lang/elixir'
+
+dynamo_release = "edwb-#{edwb_release}" # or 'elixir-0.10.0'
+#dynamo_release = '82aa4c' # or 'elixir-0.10.0'
+dynamo_repo    = 'https://github.com/clutchanalytics/dynamo'
+#dynamo_repo    = 'https://github.com/elixir-lang/dynamo'
+
+edwb_dir     = "/opt/depot/edwb-#{edwb_release}"
+elixir_dir     = File.join(edwb_dir,"elixir")
+dynamo_dir     = File.join(edwb_dir,"dynamo")
+MIX_ENV = 'test'
 
 case node['platform_family']
 when 'rhel'
@@ -88,6 +93,12 @@ if node["platform"] == "mac_os_x"
     #command 'brew install erlang || true'
    # not_if { ::File.exists?("/usr/local/bin/erl")}
     not_if "erl -version 2>&1| grep #{erl_ver}"
+
+    # TODO: make it so we can look for erlang v16B01 etc
+    #   1) ERL_CRASH_DUMP_SECONDS=0 erl -shutdown_time 1 -run 'exit(because)'
+    #   2) iex --version (or -v) gives both but piping causes erlang to not print
+    #   3) maybe kerl?
+
     #not_if { ::File.exists?("/usr/local/Cellar/erlang")}
     #action :nothing
   end
@@ -114,8 +125,7 @@ else
 end
 
 git elixir_dir do
-  #repository 'https://github.com/elixir-lang/elixir.git'
-  repository 'https://github.com/clutchanalytics/elixir.git'
+  repository elixir_repo
   reference elixir_release
 end
 
@@ -136,50 +146,39 @@ bash 'Compile and Test Elixer' do
   creates "#{elixir_dir}/lib/elixir/ebin/elixir.app"
 end
 
+if node["platform"] == "mac_os_x"
+  execute 'Install rebar with Homebrew' do
+    command "sudo -u #{ENV['SUDO_USER']} brew install rebar"
+    not_if { ::File.exists?("/usr/local/bin/rebar")}
+  end
+else
+  git "#{Chef::Config[:file_cache_path]}/rebar" do
+    repository 'https://github.com/rebar/rebar.git'
+    reference rebar_release
+    notifies :run, 'execute[make rebar]'
+  end
 
-git "#{Chef::Config[:file_cache_path]}/rebar" do
-  repository 'https://github.com/rebar/rebar.git'
-  reference rebar_release
-  notifies :run, 'execute[make rebar]'
-end
+  execute 'make rebar' do
+    command './bootstrap && chmod 0755 rebar'
+    action :nothing
+    #notifies :run, 'file[chmod rebar]'
+    cwd "#{Chef::Config[:file_cache_path]}/rebar"
+  end
 
-execute 'make rebar' do
-  command './bootstrap'
-  action :nothing
-  cwd "#{Chef::Config[:file_cache_path]}/rebar"
-end
+  file "chmod rebar" do
+    path "#{Chef::Config[:file_cache_path]}/rebar/rebar"
+    mode 0755
+    notifies :run, "link[rebar link]"
+  end
 
-link "#{elixir_dir}/bin/rebar" do
-  to "#{Chef::Config[:file_cache_path]}/rebar/rebar"
-end
-
-directory '/etc/profile.d' do
-  action :create
-  recursive true
-end
-
-file '/etc/profile.d/elixier.sh' do
-  content <<-EOE
-PATH="$PATH::#{elixir_dir}/bin"
-MIX_PATH="$MIX_PATH:#{dynamo_dir}/ebin"
-EOE
-  action :create
-  notifies :run, 'bash[Add elixir.sh to .bash_profile]'
-end
-
-bash "Add elixir.sh to .bash_profile" do
-  code <<-EOC
-  grep -qs /etc/profile.d/elixier.sh $HOME/.bash_profile
-  if [ "$?" = 1 ] ; then
-    echo ". /etc/profile.d/elixier.sh" | tee -a $HOME/.bash_profile
-  fi
-EOC
-  action :nothing
+  link "rebar link" do
+    target_file "#{elixir_dir}/bin/rebar"
+    to "#{Chef::Config[:file_cache_path]}/rebar/rebar"
+  end
 end
 
 git dynamo_dir do
-  #repository 'https://github.com/elixir-lang/dynamo.git'
-  repository 'https://github.com/clutchanalytics/dynamo.git'
+  repository dynamo_repo
   reference dynamo_release
   notifies :run, 'execute[make dynamo]'
 end
@@ -190,18 +189,35 @@ execute 'make dynamo' do
   #command 'mix do deps.get, test || true'
   command 'mix do deps.get, test'
   environment ({
-    'MIX_ENV' => 'test'
+    'MIX_ENV' => MIX_ENV,
+    'PATH' => "#{ENV['PATH']}:#{elixir_dir}/bin"
   })
+  returns [0,1] # some https tests are failing with connection refused
   action :nothing
   cwd dynamo_dir
-  returns [0,1] # https test errors in dynamo
 end
 
-#execute 'make dynamo archive and local install' do
-#  command 'mix do archive, local.install'
-#  environment ({
-#    'MIX_ENV' => 'test'
-#  })
-#  #action :nothing
-#  cwd dynamo_dir
-#end
+directory '/etc/profile.d' do
+  action :create
+  recursive true
+end
+
+file '/etc/profile.d/elixier.sh' do
+  content <<-EOE
+export PATH="$PATH:#{elixir_dir}/bin"
+export MIX_PATH="$MIX_PATH:#{dynamo_dir}/ebin"
+EOE
+  action :create
+  notifies :run, 'bash[Add elixir.sh to .bash_profile for OS X]'
+end
+
+bash "Add elixir.sh to .bash_profile for OS X" do
+  code <<-EOC
+  grep -qs /etc/profile.d/elixier.sh $HOME/.bash_profile
+  if [ ! "$?" = 0 ] ; then
+    echo ". /etc/profile.d/elixier.sh" | tee -a $HOME/.bash_profile
+  fi
+EOC
+  #action :nothing
+  only_if { node["platform"] == "mac_os_x" } # /etc/profile.d/* is read on most other platforms... Exceptions?
+end

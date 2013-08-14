@@ -7,8 +7,12 @@ myrecipe="recipe.rb"
 repourl="https://github.com/clutchanalytics/edwb.git"
 
 VERBOSE=0
+[[ "$1" = "-v" ]] &&
+  VERBOSE=1 && shift
 
 kernel_name=$(uname -s)
+
+chef_opts=""
 
 ########################################################################
 ## Utility FUNCTIONS
@@ -168,6 +172,9 @@ fi
 cd $repodir
 
 chef_apply=`which chef-apply 2> /dev/null || echo /opt/chef/bin/chef-apply`
+
+[[ "$VERBOSE" = 1 ]] &&
+  chef_opts="$chef_opts -v"
 
 echo "Running chef-apply"
 [ -z "$DRYRUN" ] &&

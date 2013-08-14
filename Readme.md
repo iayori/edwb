@@ -21,7 +21,7 @@ OS X:
 
 ## Quick Install
 
-```bash <(curl -fsSL https://raw.github.com/clutchanalytics/edwb/master/install.sh)``` 
+```curl -fsSL https://raw.github.com/clutchanalytics/edwb/master/install.sh | bash -s```
 
 ## Slightly Longer Install
 
@@ -67,11 +67,15 @@ This builds the VM, installs and runs Elixir + Dynamo (above) on the VM.
 
 ## Create first app and test!
 
+If you have not restarted your shell then type ```. ~/.bash_profile``` to load
+the environment info -- this happens automatically when you start new shells.
+
+Now create an app, get deps, and start up the dynamo server:
 
 ```
 mix dynamo /tmp/mydynamo
 cd /tmp/mydynamo
-MIX_ENV=test mix do deps.get, test
+mix do deps.get
 mix server
 ```
 

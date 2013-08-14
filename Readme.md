@@ -65,6 +65,20 @@ git clone https://github.com/clutchanalytics/edwb.git
 
 This builds the VM, installs and runs Elixir + Dynamo (above) on the VM.
 
+## Create first app and test!
+
+
+```
+mix dynamo /tmp/mydynamo
+cd /tmp/mydynamo
+MIX_ENV=test mix do deps.get, test
+mix server
+```
+
+Open http://localhost:4000/
+
+---
+
 Author
 ------
 

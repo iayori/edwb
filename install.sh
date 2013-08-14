@@ -93,6 +93,7 @@ while [ true ] ; do
     -v|-verbose|verbose)
       VERBOSE=1
       shift
+      ;;
     -vm)
       echo "Coming soon"
       exit 0

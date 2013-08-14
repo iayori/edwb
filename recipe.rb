@@ -202,6 +202,7 @@ directory '/etc/profile.d' do
   recursive true
 end
 
+# TODO: deal with existing contnets! 
 file '/etc/profile.d/elixier.sh' do
   content <<-EOE
 export PATH="$PATH:#{elixir_dir}/bin"

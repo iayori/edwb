@@ -174,8 +174,8 @@ cd $repodir
 chef_apply=`which chef-apply 2> /dev/null || echo /opt/chef/bin/chef-apply`
 
 [[ "$VERBOSE" = 1 ]] &&
-  chef_opts="$chef_opts -v"
+  chef_opts="$chef_opts -l info"
 
 echo "Running chef-apply"
 [ -z "$DRYRUN" ] &&
-  sudo $chef_apply $myrecipe
+  sudo $chef_apply $myrecipe $chef_opts

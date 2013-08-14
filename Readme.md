@@ -75,11 +75,13 @@ Now create an app, get deps, and start up the dynamo server:
 ```
 mix dynamo /tmp/mydynamo
 cd /tmp/mydynamo
+sed -ibak "s/elixir-lang\/dynamo/clutchanalytics\/dynamo/" mix.exs
 mix do deps.get
 mix server
 ```
 
 Open http://localhost:4000/
+
 
 ---
 

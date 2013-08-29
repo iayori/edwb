@@ -81,12 +81,12 @@ end
 #       https://github.com/spawngrid/kerl
 #       http://docs.basho.com/riak/1.2.1/tutorials/installation/Installing-Erlang/
 
-execute "Install Homebrew versions" do 
-  command "sudo -u #{ENV['SUDO_USER']} brew tap homebrew/versions"
-  not_if { ::File.exists?("/usr/local/Library/Taps/homebrew-versions")}
-end
-
 if node["platform"] == "mac_os_x"
+  execute "Install Homebrew versions" do 
+    command "sudo -u #{ENV['SUDO_USER']} brew tap homebrew/versions"
+    not_if { ::File.exists?("/usr/local/Library/Taps/homebrew-versions")}
+  end
+
   execute 'Install erlang with Homebrew' do
     # check for running as root
     command "sudo -u #{ENV['SUDO_USER']} brew install erlang-r16"
@@ -107,7 +107,7 @@ elsif node["platform_family"] == "arch"
     provider pkg_prov
     not_if "erl -version 2>&1| grep #{erl_ver}"
   end
-elsif node["platform"] == "linux"
+elsif node["os"] == "linux"
   # From https://www.erlang-solutions.com/downloads/download-erlang-otp
   remote_file erlpkg_file do
     source 'https://elearning.erlang-solutions.com/couchdb/rbingen_adapter/' + erlpkg

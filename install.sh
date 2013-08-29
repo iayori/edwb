@@ -151,7 +151,7 @@ case $kernel_name in
 esac
 
 have_bin git
-if [ "$1" = 1 ] ; then
+if [ "$?" = 1 ] ; then
   case $kernel_name in
     Darwin)
       echo "Installing git"

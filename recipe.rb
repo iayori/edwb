@@ -7,8 +7,8 @@
 
 edwb_release   = "2"
 
-rebar_release  = '2.0.0'
-iex_ver        = '0.10.2-dev'
+rebar_release  = '3.0.0'
+iex_ver        = '0.10.3-dev'
 erl_ver        = '5.10.2' # BEAM version (just for verification purposes)
 #erl_ver        = "16B*" # 16B*
 

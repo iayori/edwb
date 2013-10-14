@@ -89,7 +89,7 @@ if node["platform"] == "mac_os_x"
 
   execute 'Install erlang with Homebrew' do
     # check for running as root
-    command "sudo -u #{ENV['SUDO_USER']} brew install erlang-r16"
+    command "sudo -u #{ENV['SUDO_USER']} brew install erlang"
     #command 'brew install erlang || true'
    # not_if { ::File.exists?("/usr/local/bin/erl")}
     not_if "erl -version 2>&1| grep #{erl_ver}"
